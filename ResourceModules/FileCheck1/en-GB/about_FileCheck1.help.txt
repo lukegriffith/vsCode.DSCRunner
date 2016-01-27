@@ -1,0 +1,5 @@
+TOPIC FileCheck1
+
+Brief
+
+A DSC Resource Provider made to ensure a file is eixisting or not on the server

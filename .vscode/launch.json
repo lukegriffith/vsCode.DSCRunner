@@ -1,0 +1,28 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "PowerShell",
+			"type": "PowerShell",
+			"request": "launch",
+			"program": "${workspaceRoot}/DSCRunner.ps1"
+            
+		}
+	],
+    "DSCRunner": [
+        {
+            "ConfigurationModules" : [
+                "CheckFile.psm1" 
+            ],
+            "ComputerNames" : [
+                "localhost"
+            ],
+            "ResourceModules" : [
+                "FileCheck1"
+                   
+            ]
+            
+             
+        }
+    ]
+}
