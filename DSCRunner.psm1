@@ -1,7 +1,7 @@
 # Checking for module cache;
 if (-not (test-path variable:\DSCRunner))
 {
-    ${DSCRunner} = @{};
+    $Script:DSCRunner = @{};
 }
 
 
@@ -11,40 +11,65 @@ Function Sync-ConfigurationData {
         $json
     )
     
-    ${GLOBAL:DSCRunner}.add("ConfigurationModules", $json.ConfigurationModules)
-    ${GLOBAL:DSCRunner}.add("CompileModules", $json.ResourceModules)
-    ${GLOBAL:DSCRunner}.add("ComputerNames", $json.ComputerNames)
-    Write-Verbose "Loaded Config Data from Launch.json"
+    try {
+        $Script:DSCRunner.add("ConfigurationModules", $json.DSCRunner.ConfigurationModules)
+        $Script:DSCRunner.add("CompileModules", $json.DSCRunner.ResourceModules)
+        $Script:DSCRunner.add("ComputerNames", $json.DSCRunner.ComputerNames)
+        Write-Verbose "Loaded Config Data from Launch.json."
+    }
+    catch {
+        
+        Write-Verbose "Configuration already loaded."
+    }
 }
 
-Function Start-RunnerConfiguration {
-    
+Function Build-RunnerConfiguration {
+    [cmdletbinding()]
     param(
         
     )
     
     
-    ForEach ($mod in $DSCRunner["ConfigurationModules"])
+        ForEach ($mod in $Script:DSCRunner["ConfigurationModules"])
     {
         
         try {
+            Write-Verbose "Importing module $mod."
             Import-Module $PSScriptRoot\Configurations\$mod
         
-        
+            Write-Verbose "Obtaining configuration details."
             # This will need improvements, two dots will ruin break it.
             $ModuleName = $mod -replace "(?>\.).+" , ""
-            $Config = Get-Command $ModuleName | Where-Object {$_.CommandType -like "Configuration"}
+            $Config = Get-Command -Module $ModuleName | Where-Object {$_.CommandType -like "Configuration"}
 
             $Config | ForEach-Object {
-            $cmd = $_.Name
+                $cmd = $_.Name
 
-            & $cmd 
+                $sb = { 
+
+                    Import-Module $PSScriptRoot\Configurations\$mod
+                    $Config = Get-Command -Module $ModuleName | Where-Object {$_.CommandType -like "Configuration"}
+                    & $cmd
+                }
+                
+
+                try {
+                Write-Verbose "Executing configuration command."
+                #& $cmd 
+                Invoke-Command -ScriptBlock $sb -ea Stop
+
+                Write-Debug -Message "blah" 
+                }
+                catch {
+                Write-Debug -Message "$_"
+
+                }
             }
         
         }
         catch {
             
-            Write-Error -Message "$mod failed to run"
+            Write-Error -Message "$mod failed to run."
             $_
         }
         
