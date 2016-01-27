@@ -17,7 +17,7 @@
             "ComputerNames" : [
                 "localhost"
             ],
-            "ResourceModules" : [
+            "RequiredModules" : [
                 "FileCheck1"
                    
             ]

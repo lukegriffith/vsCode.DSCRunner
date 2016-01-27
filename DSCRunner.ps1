@@ -53,4 +53,4 @@ Write-Verbose "======================================="
 Write-Verbose "Executing configurations."
 Write-Verbose "======================================="
 
-Build-RunnerConfiguration @tpa
+Start-ConfigurationFactory @tpa

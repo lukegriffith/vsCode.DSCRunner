@@ -13,7 +13,7 @@ Function Sync-ConfigurationData {
     
     try {
         $Script:DSCRunner.add("ConfigurationModules", $json.DSCRunner.ConfigurationModules)
-        $Script:DSCRunner.add("CompileModules", $json.DSCRunner.ResourceModules)
+        $Script:DSCRunner.add("RequiredModules", $json.DSCRunner.RequiredModules)
         $Script:DSCRunner.add("ComputerNames", $json.DSCRunner.ComputerNames)
         Write-Verbose "Loaded Config Data from Launch.json."
     }
@@ -23,7 +23,7 @@ Function Sync-ConfigurationData {
     }
 }
 
-Function Build-RunnerConfiguration {
+Function Start-ConfigurationFactory {
     [cmdletbinding()]
     param(
         
@@ -45,23 +45,14 @@ Function Build-RunnerConfiguration {
             $Config | ForEach-Object {
                 $cmd = $_.Name
 
-                $sb = { 
-
-                    Import-Module $PSScriptRoot\Configurations\$mod
-                    $Config = Get-Command -Module $ModuleName | Where-Object {$_.CommandType -like "Configuration"}
-                    & $cmd
-                }
-                
-
                 try {
-                Write-Verbose "Executing configuration command."
-                #& $cmd 
-                Invoke-Command -ScriptBlock $sb -ea Stop
-
-                Write-Debug -Message "blah" 
+                    Write-Verbose "Executing configuration command."
+                    & $cmd 
+                    Write-Debug -Message "blah" 
                 }
                 catch {
-                Write-Debug -Message "$_"
+                    Write-Error -Message "$cmd failed to run, from $ModuleName."
+                    Write-Debug -Message "$_"
 
                 }
             }
