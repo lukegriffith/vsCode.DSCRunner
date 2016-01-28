@@ -19,7 +19,7 @@ Add pester into the mix.
 #>
 
 # Setting Environment
-$env:PSModulePath = $env:PSModulePath + ";$PSScriptRoot\ResourceModules"
+$env:PSModulePath = $env:PSModulePath + ";$PSScriptRoot\RequiredModules;$PSScriptRoot\Configurations;"
 $VerbosePreference = 'Continue'
 # testing parameters
 $tpa = @{}
