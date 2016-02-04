@@ -25,7 +25,7 @@ $VerbosePreference = 'Continue'
 $tpa = @{}
 $tpa.add("Verbose",$true)
 
-set-location $PSScriptRoot
+set-location $PSScriptRoot\Execution
 # Importing Module
 
 Write-Verbose "======================================="
@@ -52,3 +52,4 @@ Write-Verbose "Executing configurations."
 Write-Verbose "======================================="
 
 Start-ConfigurationFactory @tpa
+
