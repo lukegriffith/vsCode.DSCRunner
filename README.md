@@ -4,7 +4,7 @@ I started this project with the intended to ease the burden of testing DSC resou
 
 
 ## Configurations/
-Within this folder are the module files that contain the final configuration files. 
+Within this folder are the module files that contain the final configurations. 
 These can contain nested configurations, as long as the required modules are within the RequiredModules/ folder and are specified on the Launch.Json, as these are imported into the runspace prior to compiling the configuaration MOF.
 
 ## RequiredModules/
