@@ -12,8 +12,8 @@ Function Sync-ConfigurationData {
     )
     
     try {
-        $Script:DSCRunner.add("ConfigurationModules", $json.DSCRunner.ConfigurationModules)
-        $Script:DSCRunner.add("CompileModules", $json.DSCRunner.ResourceModules)
+        $Script:DSCRunner.add("Configurations", $json.DSCRunner.Configurations)
+        $Script:DSCRunner.add("RequiredModules", $json.DSCRunner.RequiredModules)
         $Script:DSCRunner.add("ComputerNames", $json.DSCRunner.ComputerNames)
         Write-Verbose "Loaded Config Data from Launch.json."
     }
@@ -23,40 +23,70 @@ Function Sync-ConfigurationData {
     }
 }
 
-Function Start-RunnerConfiguration {
+Function Start-ConfigurationFactory {
     [cmdletbinding()]
     param(
         
     )
-    
-    
-        ForEach ($mod in $Script:DSCRunner["ConfigurationModules"])
-    {
         
-        try {
-            Write-Verbose "Importing module $mod."
-            . $PSScriptRoot\Configurations\$mod
+        Write-Verbose "Importing configurations."
+        Import-Module $PSScriptRoot\Configurations
+    
+        $Script:DSCRunner["Configurations"] | ForEach-Object -Begin {
+            
+
+            
+            try {
+                    
+                Write-Verbose "Imported required modules for config."
+                $Script:DSCRunner["RequiredModules"] | ForEach-Object {
+                    Try {
+                        Write-Verbose "Importing Module $_"
+                        Import-Module $_
+                    } catch {
+                        Write-Error "Failed to import $m_"
+                    }
+                }
+            # Potentially, you could keep an instance of the imported module in memory to call back later.
+            # Invoke in the Module runspace might be beneficial for debug extraction info. 
+            
+                    
+                    
+            } catch {
+                    
+                Write-Error "Unable to get RequiredModules from DSCRunner cache."
+            }
+            
+                
+
+        } -Process {
         
+        $CommandName = $_
+        
+        try {        
             Write-Verbose "Obtaining configuration details."
             # This will need improvements, two dots will ruin break it.
-            $ModuleName = $mod -replace "(?>\.).+" , ""
-            $Config = Get-Command -Module $ModuleName | Where-Object {$_.CommandType -like "Configuration"}
-
+            
+            try {
+                $Config = Get-Command $CommandName -ErrorAction Stop | Where-Object {$_.CommandType -like "Configuration"}
+            }
+            catch {
+                
+                Write-Error "Unable to find configuration command."
+            }
             $Config | ForEach-Object {
                 $cmd = $_.Name
 
-                $sb = { 
-
-                    Import-Module $PSScriptRoot\Configurations\$mod
-                    $Config = Get-Command -Module $ModuleName | Where-Object {$_.CommandType -like "Configuration"}
-                    & $cmd
+                try {
+                    Write-Verbose "Executing configuration command."
+                    & $cmd 
+                    Write-Debug -Message "blah" 
                 }
-                
-                Write-Verbose "Executing configuration command."
-                & $cmd 
-                Invoke-Command -ScriptBlock $sb
+                catch {
+                    Write-Error -Message "$cmd failed to run, from $ModuleName."
+                    Write-Debug -Message "$_"
 
-                Write-Debug -Message "blah"
+                }
             }
         
         }
@@ -66,9 +96,7 @@ Function Start-RunnerConfiguration {
             $_
         }
         
+     
         
     }
-    
-    
-    
 }

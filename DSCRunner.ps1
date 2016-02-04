@@ -19,23 +19,38 @@ Add pester into the mix.
 #>
 
 # Setting Environment
-$env:PSModulePath = $env:PSModulePath + ";$PSScriptRoot\ResourceModules"
-
+$env:PSModulePath = $env:PSModulePath + ";$PSScriptRoot\RequiredModules;$PSScriptRoot\Configurations;"
+$VerbosePreference = 'Continue'
 # testing parameters
 $tpa = @{}
 $tpa.add("Verbose",$true)
 
-
+set-location $PSScriptRoot
 # Importing Module
 
+Write-Verbose "======================================="
+Write-Verbose "Sanitizing environment."
+Write-Verbose "======================================="
 
-    Remove-Module $PSScriptRoot\DSCRunner.psm1 -ea SilentlyContinue
-    Remove-Module $PSScriptRoot\vsCodeUtil.psm1 -ea SilentlyContinue
+Remove-Module $PSScriptRoot\DSCRunner.psm1 -ea SilentlyContinue
+Remove-Module $PSScriptRoot\vsCodeUtil.psm1 -ea SilentlyContinue
 
+Write-Verbose "======================================="
+Write-Verbose "Importing dependencies."
+Write-Verbose "======================================="
 
 Import-Module $PSScriptRoot\DSCRunner.psm1
 Import-Module $PSScriptRoot\vsCodeUtil.psm1
 
+Write-Verbose "======================================="
+Write-Verbose "Syncing configuration data."
+Write-Verbose "======================================="
+
 Sync-ConfigurationData ( Get-LaunchJson ) @tpa
 
-Start-RunnerConfiguration @tpa
+
+Write-Verbose "======================================="
+Write-Verbose "Executing configurations."
+Write-Verbose "======================================="
+
+Start-ConfigurationFactory @tpa

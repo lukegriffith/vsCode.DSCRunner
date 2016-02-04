@@ -11,13 +11,13 @@
 	],
     "DSCRunner": [
         {
-            "ConfigurationModules" : [
-                "CheckFile.psm1" 
+            "Configurations" : [
+                "CheckingFile" 
             ],
             "ComputerNames" : [
                 "localhost"
             ],
-            "ResourceModules" : [
+            "RequiredModules" : [
                 "FileCheck1"
                    
             ]

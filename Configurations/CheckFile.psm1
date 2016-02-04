@@ -1,6 +1,3 @@
-Import-Module FileCheck1
-
-
 Configuration CheckingFile {
     
     Import-DscResource -ModuleName FileCheck1
@@ -15,3 +12,5 @@ Configuration CheckingFile {
     }
     
 }
+
+Export-ModuleMember -Function CheckingFile
