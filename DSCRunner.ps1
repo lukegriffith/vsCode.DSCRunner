@@ -23,7 +23,7 @@ $env:PSModulePath = $env:PSModulePath + ";$PSScriptRoot\RequiredModules;$PSScrip
 $VerbosePreference = 'Continue'
 # testing parameters
 $tpa = @{}
-$tpa.add("Verbose",$true)
+#$tpa.add("Verbose",$true)
 
 set-location $PSScriptRoot\Execution
 # Importing Module
@@ -33,12 +33,20 @@ Write-Verbose "Sanitizing environment."
 Write-Verbose "======================================="
 
 Remove-Module $PSScriptRoot\DSCRunner.psm1 -ea SilentlyContinue
+<<<<<<< HEAD
+=======
+Remove-Module $PSScriptRoot\vsCodeUtil.psm1 -ea SilentlyContinue
+>>>>>>> 674689179d00842a460bacfc818108713befddf2
 
 Write-Verbose "======================================="
 Write-Verbose "Importing dependencies."
 Write-Verbose "======================================="
 
 Import-Module $PSScriptRoot\DSCRunner.psm1
+
+Write-Verbose "======================================="
+Write-Verbose "Syncing configuration data."
+Write-Verbose "======================================="
 
 Write-Verbose "======================================="
 Write-Verbose "Syncing configuration data."
@@ -52,4 +60,7 @@ Write-Verbose "Executing configurations."
 Write-Verbose "======================================="
 
 Start-ConfigurationFactory @tpa
+<<<<<<< HEAD
 
+=======
+>>>>>>> 674689179d00842a460bacfc818108713befddf2
