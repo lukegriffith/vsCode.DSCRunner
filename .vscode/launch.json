@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "PowerShell",
+			"name": "DSCRunner",
 			"type": "PowerShell",
 			"request": "launch",
 			"program": "${workspaceRoot}/DSCRunner.ps1"
