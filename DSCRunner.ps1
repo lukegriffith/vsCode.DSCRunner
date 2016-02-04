@@ -33,10 +33,7 @@ Write-Verbose "Sanitizing environment."
 Write-Verbose "======================================="
 
 Remove-Module $PSScriptRoot\DSCRunner.psm1 -ea SilentlyContinue
-<<<<<<< HEAD
-=======
-Remove-Module $PSScriptRoot\vsCodeUtil.psm1 -ea SilentlyContinue
->>>>>>> 674689179d00842a460bacfc818108713befddf2
+
 
 Write-Verbose "======================================="
 Write-Verbose "Importing dependencies."
@@ -60,7 +57,3 @@ Write-Verbose "Executing configurations."
 Write-Verbose "======================================="
 
 Start-ConfigurationFactory @tpa
-<<<<<<< HEAD
-
-=======
->>>>>>> 674689179d00842a460bacfc818108713befddf2
