@@ -2,7 +2,7 @@
 Function Get-LaunchJson {
     
     try {
-    Get-Content $PSScriptRoot\.vscode\launch.json | 
+    Get-Content $PSScriptRoot\..\.vscode\launch.json | 
         ConvertFrom-Json 
     }
     catch {
